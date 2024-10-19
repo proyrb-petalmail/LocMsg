@@ -136,7 +136,7 @@ struct Root {
         }
         .margin({
           top: 8,
-          bottom: 8,
+          bottom: 16,
           left: 16,
           right: 16
         })
@@ -161,7 +161,7 @@ struct Root {
 
         ListItem() {
           Column() {
-            Blank(this.navigate_bar_height + 25)
+            Blank(this.navigate_bar_height + 21)
           }
           .width('100%')
         }
