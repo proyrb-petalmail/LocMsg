@@ -33,10 +33,12 @@ struct Root {
   status_bar_height: number = 0;
   @StorageProp('navigate_bar_height')
   navigate_bar_height: number = 0;
-  @State dialogues: Array<Dialogue> =
+  @State stick_dialogues: Array<Dialogue> =
     [new Dialogue('Reginald', 'ok~', Color.Green), new Dialogue('Mark', 'let\' go!', Color.Orange),
       new Dialogue('Alen', 'sounds good!', Color.Pink), new Dialogue('Mark', 'let\' go!', Color.Orange),
-      new Dialogue('Alen', 'sounds good!', Color.Pink), new Dialogue('Mark', 'let\' go!', Color.Orange),
+      new Dialogue('Alen', 'sounds good!', Color.Pink)];
+  @State dialogues: Array<Dialogue> =
+    [new Dialogue('Reginald', 'ok~', Color.Green), new Dialogue('Mark', 'let\' go!', Color.Orange),
       new Dialogue('Alen', 'sounds good!', Color.Pink), new Dialogue('Mark', 'let\' go!', Color.Orange),
       new Dialogue('Alen', 'sounds good!', Color.Pink), new Dialogue('Mark', 'let\' go!', Color.Orange),
       new Dialogue('Alen', 'sounds good!', Color.Pink), new Dialogue('Mark', 'let\' go!', Color.Orange),
@@ -53,20 +55,70 @@ struct Root {
         .width('100%')
       }
 
-      ForEach(this.dialogues, (dialogue: Dialogue) => {
-        ListItem() {
-          Column() {
-            Text(dialogue.getName())
-              .fontSize(20)
-              .fontWeight(FontWeight.Bold)
-            Text(dialogue.getMessage())
-              .fontSize(16)
+      ListItemGroup() {
+        ForEach(this.stick_dialogues, (dialogue: Dialogue) => {
+          ListItem() {
+            Column() {
+              Text(dialogue.getName())
+                .fontSize(20)
+                .fontWeight(FontWeight.Bold)
+              Text(dialogue.getMessage())
+                .fontSize(16)
+            }
           }
-        }
-        .width('100%')
-        .height(64)
-        .backgroundColor(dialogue.getColor())
+          .width('100%')
+          .height(64)
+
+          // .backgroundColor(dialogue.getColor())
+        })
+      }
+      .margin({
+        top: 8,
+        bottom: 8,
+        left: 16,
+        right: 16
       })
+      .border({ radius: 16 })
+      .backgroundColor(0xFFFFFF)
+      .shadow(ShadowStyle.OUTER_DEFAULT_SM)
+      .divider({
+        strokeWidth: 1,
+        color: 0xDDDDDD,
+        startMargin: 50,
+        endMargin: 50
+      })
+
+      ListItemGroup() {
+        ForEach(this.dialogues, (dialogue: Dialogue) => {
+          ListItem() {
+            Column() {
+              Text(dialogue.getName())
+                .fontSize(20)
+                .fontWeight(FontWeight.Bold)
+              Text(dialogue.getMessage())
+                .fontSize(16)
+            }
+          }
+          .width('100%')
+          .height(64)
+        })
+      }
+      .margin({
+        top: 8,
+        bottom: 8,
+        left: 16,
+        right: 16
+      })
+      .border({ radius: 16 })
+      .backgroundColor(0xFFFFFF)
+      .shadow(ShadowStyle.OUTER_DEFAULT_SM)
+      .divider({
+        strokeWidth: 1,
+        color: 0xDDDDDD,
+        startMargin: 50,
+        endMargin: 50
+      })
+
       ListItem() {
         Column() {
           Blank(this.navigate_bar_height)
@@ -75,30 +127,31 @@ struct Root {
       }
     }
     .size({ width: '100%', height: '100%' })
-    .backgroundColor(Color.Grey)
+    .backgroundColor(0xEEEEEE)
+    .scrollBar(BarState.Off)
   }
 
   aboutToAppear(): void {
-    hilog.debug(hilog_domain, 'Root', '%{public}s', 'aboutToAppear');
+    hilog.debug(hilog_domain, 'root', '%{public}s', 'aboutToAppear');
   }
 
   onDidBuild(): void {
-    hilog.debug(hilog_domain, 'Root', '%{public}s', 'onDidBuild');
+    hilog.debug(hilog_domain, 'root', '%{public}s', 'onDidBuild');
   }
 
   onPageShow(): void {
-    hilog.debug(hilog_domain, 'Root', '%{public}s', 'onPageShow');
+    hilog.debug(hilog_domain, 'root', '%{public}s', 'onPageShow');
   }
 
   onBackPress(): boolean | void {
-    hilog.debug(hilog_domain, 'Root', '%{public}s', 'onBackPress');
+    hilog.debug(hilog_domain, 'root', '%{public}s', 'onBackPress');
   }
 
   onPageHide(): void {
-    hilog.debug(hilog_domain, 'Root', '%{public}s', 'onPageHide');
+    hilog.debug(hilog_domain, 'root', '%{public}s', 'onPageHide');
   }
 
   aboutToDisappear(): void {
-    hilog.debug(hilog_domain, 'Root', '%{public}s', 'aboutToDisappear');
+    hilog.debug(hilog_domain, 'root', '%{public}s', 'aboutToDisappear');
   }
 }
