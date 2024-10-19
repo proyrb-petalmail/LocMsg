@@ -45,6 +45,27 @@ struct Root {
       new Dialogue('Alen', 'sounds good!', Color.Pink), new Dialogue('Mark', 'let\' go!', Color.Orange),
       new Dialogue('Alen', 'sounds good!', Color.Pink), new Dialogue('Mark', 'let\' go!', Color.Orange),
       new Dialogue('Alen', 'sounds good!', Color.Pink)];
+  @State list_stick_group_menu_is_show: boolean = false;
+
+  @Builder
+  list_stick_group_menu() {
+    Menu() {
+      MenuItem({ content: '第一项' })
+      MenuItem({ content: '第二项' })
+      MenuItem({ content: '第三项' })
+    }
+  }
+
+  @State list_group_menu_is_show: boolean = false;
+
+  @Builder
+  list_group_menu() {
+    Menu() {
+      MenuItem({ content: '第一项' })
+      MenuItem({ content: '第二项' })
+      MenuItem({ content: '第三项' })
+    }
+  }
 
   build() {
     List() {
@@ -68,8 +89,6 @@ struct Root {
           }
           .width('100%')
           .height(64)
-
-          // .backgroundColor(dialogue.getColor())
         })
       }
       .margin({
@@ -78,15 +97,25 @@ struct Root {
         left: 16,
         right: 16
       })
-      .border({ radius: 16 })
-      .backgroundColor(0xFFFFFF)
+      .border({ radius: $r('app.integer.list_group_radius') })
+      .backgroundColor($r('app.color.list_group_background_color'))
       .shadow(ShadowStyle.OUTER_DEFAULT_SM)
       .divider({
         strokeWidth: 1,
-        color: 0xDDDDDD,
+        color: $r('app.color.list_divider_color'),
         startMargin: 50,
         endMargin: 50
       })
+      .gesture(LongPressGesture().onAction((event: GestureEvent) => {
+        hilog.debug(hilog_domain, 'root', '%{public}s', 'LongPressGesture');
+        this.getUIContext().getContextMenuController().close();
+        this.list_stick_group_menu_is_show = false;
+        this.list_stick_group_menu_is_show = true;
+      }).onActionEnd((event: GestureEvent) => {
+        hilog.debug(hilog_domain, 'root', '%{public}s', 'LongPressGestureEnd');
+      }))
+      .bindContextMenu(this.list_stick_group_menu_is_show, this.list_stick_group_menu,
+        { placement: Placement.BottomRight, enableArrow: true })
 
       ListItemGroup() {
         ForEach(this.dialogues, (dialogue: Dialogue) => {
@@ -109,15 +138,25 @@ struct Root {
         left: 16,
         right: 16
       })
-      .border({ radius: 16 })
-      .backgroundColor(0xFFFFFF)
+      .border({ radius: $r('app.integer.list_group_radius') })
+      .backgroundColor($r('app.color.list_group_background_color'))
       .shadow(ShadowStyle.OUTER_DEFAULT_SM)
       .divider({
         strokeWidth: 1,
-        color: 0xDDDDDD,
+        color: $r('app.color.list_divider_color'),
         startMargin: 50,
         endMargin: 50
       })
+      .gesture(LongPressGesture().onAction((event: GestureEvent) => {
+        hilog.debug(hilog_domain, 'root', '%{public}s', 'LongPressGesture');
+        this.getUIContext().getContextMenuController().close();
+        this.list_group_menu_is_show = false;
+        this.list_group_menu_is_show = true;
+      }).onActionEnd((event: GestureEvent) => {
+        hilog.debug(hilog_domain, 'root', '%{public}s', 'LongPressGestureEnd');
+      }))
+      .bindContextMenu(this.list_group_menu_is_show, this.list_group_menu, { placement: Placement.TopRight, enableArrow: true })
+
 
       ListItem() {
         Column() {
@@ -127,7 +166,7 @@ struct Root {
       }
     }
     .size({ width: '100%', height: '100%' })
-    .backgroundColor(0xEEEEEE)
+    .backgroundColor($r('app.color.list_background_color'))
     .scrollBar(BarState.Off)
   }
 
