@@ -1,0 +1,12 @@
+{
+  "integer": [
+    {
+      "name": "status_bar_height",
+      "value": 42
+    },
+    {
+      "name": "navigate_bar_height",
+      "value": 28
+    }
+  ]
+}
