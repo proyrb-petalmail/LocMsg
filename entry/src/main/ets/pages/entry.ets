@@ -1,6 +1,9 @@
 import { hilog } from '@kit.PerformanceAnalysisKit';
+import { curves } from '@kit.ArkUI';
 
 const hilog_domain: number = 0x0001;
+const bottom_bar_button_height_vp: number = 7;
+const bottom_bar_opened_height_vp: number = 400;
 
 class Dialogue {
   private name: string = '';
@@ -29,10 +32,10 @@ class Dialogue {
 @Entry
 @Component
 struct Root {
-  @StorageProp('status_bar_height')
-  status_bar_height: number = 0;
-  @StorageProp('navigate_bar_height')
-  navigate_bar_height: number = 0;
+  @StorageProp('topRectHeight')
+  topRectHeight: number = 0;
+  @StorageProp('bottomRectHeight')
+  bottomRectHeight: number = 0;
   @State stick_dialogues: Array<Dialogue> =
     [new Dialogue('Reginald', 'ok~', Color.Green), new Dialogue('Mark', 'let\' go!', Color.Orange),
       new Dialogue('Alen', 'sounds good!', Color.Pink), new Dialogue('Mark', 'let\' go!', Color.Orange),
@@ -47,8 +50,11 @@ struct Root {
       new Dialogue('Alen', 'sounds good!', Color.Pink)];
   @State list_stick_group_menu_is_show: boolean = false;
   @State list_group_menu_is_show: boolean = false;
-
-  // @State bottom_card
+  @State bottom_bar_height_px: number = this.bottomRectHeight + vp2px(bottom_bar_button_height_vp * 3 + 1);
+  @State bottom_bar_blur: number = 30;
+  @State bottom_bar_color: Color = Color.Transparent;
+  @State bottom_bar_is_open: boolean = false;
+  private bottom_bar_button_transition_effect: TransitionEffect = TransitionEffect.opacity(0).animation({ curve: Curve.Linear });
 
   @Builder
   list_stick_group_menu() {
@@ -72,10 +78,7 @@ struct Root {
     Stack({ alignContent: Alignment.Bottom }) {
       List() {
         ListItem() {
-          Column() {
-            Blank(this.status_bar_height)
-          }
-          .width('100%')
+          Column().size({ width: '100%', height: `${this.topRectHeight}px` })
         }
 
         ListItemGroup() {
@@ -160,10 +163,7 @@ struct Root {
         .bindContextMenu(this.list_group_menu_is_show, this.list_group_menu, { placement: Placement.TopRight, enableArrow: true })
 
         ListItem() {
-          Column() {
-            Blank(this.navigate_bar_height + 21)
-          }
-          .width('100%')
+          Column().size({ width: '100%', height: `${this.bottomRectHeight + vp2px(bottom_bar_button_height_vp * 3 + 1)}px` })
         }
       }
       .size({ width: '100%', height: '100%' })
@@ -173,26 +173,49 @@ struct Root {
       Column() {
         Button() {
           Button()
-            .size({ width: '100%', height: 8 })
+            .size({ width: '100%', height: bottom_bar_button_height_vp })
         }
         .size({ width: 80 })
         .backgroundColor(Color.Transparent)
-        .padding(6)
+        .padding(bottom_bar_button_height_vp)
+        .onClick((event: ClickEvent) => {
+          if (this.bottom_bar_is_open) {
+            this.bottom_bar_height_px -= vp2px(bottom_bar_opened_height_vp);
+            this.bottom_bar_blur = 30;
+            this.bottom_bar_color = Color.Transparent;
+            this.bottom_bar_is_open = false;
+          } else {
+            this.bottom_bar_height_px += vp2px(bottom_bar_opened_height_vp);
+            this.bottom_bar_blur = 0;
+            this.bottom_bar_color = Color.White;
+            this.bottom_bar_is_open = true;
+          }
+        })
 
-        Blank(this.navigate_bar_height)
+        // if (this.bottom_bar_is_open) {
+        //   Column() {
+        //     Text('Test')
+        //     Button('OK')
+        //       .onClick((event: ClickEvent) => {
+        //         this.bottom_bar_is_open = !this.bottom_bar_is_open;
+        //       })
+        //   }.size({ width: '100%', height: 100 })
+        // }
       }
-      .size({ width: '100%' })
+      .size({ width: '100%', height: `${this.bottom_bar_height_px}px` })
       .border({
         width: {
           left: 0,
           right: 0,
           top: 1,
           bottom: 0
-        }, color: $r('app.color.list_divider_color')
+        }, color: $r('app.color.list_divider_color'), radius: 18
       })
-      .backgroundColor(Color.Transparent)
-      .backdropBlur(30)
+      .align(Alignment.Top)
+      .backgroundColor(this.bottom_bar_color)
+      .backdropBlur(this.bottom_bar_blur)
       .shadow(ShadowStyle.OUTER_DEFAULT_MD)
+      .animation({ curve: curves.springMotion() })
     }
     .size({ width: '100%', height: '100%' })
   }
